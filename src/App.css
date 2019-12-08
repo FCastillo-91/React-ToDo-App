@@ -2,15 +2,6 @@ body {
   background-color: #f2f2f2;
 }
 
-.jumbotron {
-  background-color: #99d0f5;
-  color: #ffffff;
-}
-
-#newTaskForm {
-  max-width: 400px;
-}
-
 .App {
   text-align: center;
 }
