@@ -1,23 +1,35 @@
-import React from "react"
+import React from "react";
 
 class NewTask extends React.Component {
+    state = {
+        taskName: "",
+        progressStatus: [],
+        dueDate:"2019-12-09",
+        urgency: ""
+    };
+
+    updateTaskName = (event) => {
+        this.setState({
+            taskName: event.target.value
+        });
+    }
     render() {
         return (
-            <form id="newTaskForm" className="text-left mb-5">
-                <div className="form-group">
-                    <label for="addNewTask">New Task</label>
-                    <input type="text" className="form-control" id="addNewTask" name="addNewTask"
-                        aria-describedby="addNewTaskHelp" placeholder="Write Task Here" maxlength="120" />
-                    <small id="addNewTaskHelp" className="form-text text-muted">
-                        Enter text and numbers, max 120 characters.
-                            </small>
+            <div className="row">
+                <div className="col-5">
+                    <input type="text" onChange={this.updateTaskName} value={this.state.updateTaskName} className="form-control" placeholder="Write Task Here"/>
                 </div>
-                <div className="form-group form-check">
+                <div className="col-5">
+                    <input type="date" className="form-control"/>
+                </div>
+                <div className="col-2">
+                    <button className="btn btn-primary">Add</button>
+                </div>
+                <div className="col-12">
                     <input type="checkbox" className="form-check-input" id="taskUrgency" name="taskUrgency" />
-                    <label className="form-check-label" for="taskUrgency">Is Urgent</label>
+                    <label className="form-check-label" hfor="taskUrgency">Is Urgent</label>
                 </div>
-                <button type="button" className="btn btn-primary">Add</button>
-            </form>
+            </div>
         );
     }
 }
