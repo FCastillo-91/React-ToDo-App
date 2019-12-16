@@ -3,8 +3,7 @@ import Header from "./Header"
 import AddNewTaskForm from "./AddNewTaskForm"
 import ToDoListHeader from "./ToDoListHeader"
 import Task from "./Task"
-// import DoneList from "./DoneList"
-// import ToDoList from "./ToDoList"
+import DoneList from "./DoneList"
 
 import './App.css';
 
@@ -31,7 +30,6 @@ class App extends React.Component {
         <div className="container">
         <Header />
         <AddNewTaskForm />
-        <h4>To do</h4>
         <ToDoListHeader count={pendingTasks.length} />
         {pendingTasks.map((task) => {
           return (
@@ -41,15 +39,7 @@ class App extends React.Component {
             />
           );
         })}
-        <h4>completed</h4>
-        {completedTasks.map((task) => {
-          return (
-            <Task
-            key={task.id}
-            task={task}
-            />
-          );
-        })}
+        <DoneList completedTasks={completedTasks} />
         </div>
       </div>
     );
