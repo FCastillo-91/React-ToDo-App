@@ -3,13 +3,11 @@ import React from "react";
 class NewTask extends React.Component {
     constructor(props) {
         super(props);
-        console.log({
-            caca: props.taskForm
-        })
         this.state = {
             taskName: props.taskForm.name,
             dueDate: props.taskForm.dueDate,
             urgency: props.taskForm.urgency,
+            id: props.taskForm.id
         };
     }
 
@@ -17,7 +15,8 @@ class NewTask extends React.Component {
         this.setState({
             taskName: props.taskForm.name,
             dueDate: props.taskForm.dueDate,
-            urgency: props.taskForm.urgency
+            urgency: props.taskForm.urgency,
+            id: props.taskForm.id
         });
     }
     updateTaskName = (event) => {
@@ -39,14 +38,20 @@ class NewTask extends React.Component {
     }
 
     addTask = () => {
-
+        if (this.state.taskName === "") {
+            return alert ("Please add Task")
+        }
+        if (this.state.dueDate === "") {
+            return alert ("Please select a task due date")
+        }
+        
         this.props.addNewTaskFunc(
             this.state.taskName,
             this.state.dueDate,
-            this.state.urgency
+            this.state.urgency,
+            this.state.id
         );
     }
-
 
     render() {
         return (
@@ -69,7 +74,13 @@ class NewTask extends React.Component {
                     <label className="form-check-label" hfor="taskUrgency">Is urgent</label>
                 </div>
                 <div className="col-12 col-md-2 mb-2">
-                    <button onClick={this.addTask} className="btn btn-primary btn-block">Add</button>
+                    <button onClick={this.addTask} 
+                    className={
+                        this.state.id !==null ? "btn btn-success btn-block" : "btn btn-primary btn-block"
+                    }
+                    >
+                        {this.state.id !==null ? 'Update' : "Add"} 
+                        </button>
                 </div>
 
             </div>

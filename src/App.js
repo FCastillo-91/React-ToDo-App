@@ -14,26 +14,60 @@ class App extends React.Component {
     taskForm: {
       name: '',
       dueDate: '2019-01-01',
-      urgency: false
+      urgency: false,
+      id: null
     }
   }
 
-  addNewTask = (name, date, urgency) => {
-    
+  addNewTask = (name, date, urgency, id) => {
+    const myTaskList = this.state.taskList;
+    //create my task object
     const newTask = {
       name: name,
       dueDate: date,
       done: false,
       urgency: urgency,
-      id: uuid(),
+      id: (id === null )? uuid() : id,
       isEditing: false
     }
+    //If new task
+    if(id === null){
+      const copyOfTasks = myTaskList;
+      copyOfTasks.slice();
+      //insert my new task
+      copyOfTasks.push(newTask);
+      this.setState({
+        taskList: copyOfTasks
+      })
+      this.resetForm();
+    }else{
+      //edit
+        console.log(myTaskList);
+      myTaskList.forEach(function(task){
+        //update my task
+        if(task.id === id){
+          task.name = newTask.name;
+          task.isEditing = false;
+          task.date = newTask.date;
+          task.urgency = newTask.urgency;
+        }
+      })
+      this.setState({
+        taskList: myTaskList
+      })
+      this.resetForm();
+    }
+  }
 
-    const copyOfTasks = this.state.taskList.slice()
-    copyOfTasks.push(newTask)
-
+  resetForm = () => {
+    const taskForm = {
+      name: '',
+      dueDate: '2019-01-01',
+      urgency: false,
+      id: null
+    }
     this.setState({
-      taskList: copyOfTasks
+      taskForm: taskForm
     })
   }
 
@@ -67,19 +101,19 @@ class App extends React.Component {
     let updateTask;
     myTaskList.forEach(task => {
       if (task.id === id) {
+        task.isEditing = true;
         updateTask = {
           name: task.name,
           dueDate: task.dueDate,
-          urgency: task.urgency
+          urgency: task.urgency,
+          id: task.id
         };
       }
     });
 
-    const selectedTask = myTaskList.filter(task => task.id !== id);
-
     this.setState({
       taskForm: updateTask,
-      taskList: selectedTask
+      taskList: myTaskList,
     });
   }
 
@@ -99,6 +133,7 @@ class App extends React.Component {
           <AddNewTaskForm
             addNewTaskFunc={this.addNewTask}
             taskForm={this.state.taskForm}
+        
           />
           <ToDoListHeader count={pendingTasks.length} />
           {pendingTasks.map((task) => {
