@@ -1,6 +1,14 @@
 import React from "react"
+import './Task.css';
 
 class Task extends React.Component {
+
+    taskDone = () => { 
+
+       this.props.taskCompletedFunc(
+           this.props.task.id
+       ); 
+    }
 
     render() {
         return (
@@ -11,6 +19,9 @@ class Task extends React.Component {
                             <li className="list-group-item">
                                 <div className="row no-gutters">
                                     <div className="col-6 col-md-5 mb-3">
+                                        {this.props.task.urgency && 
+                                        <span className="importantIcon"><i className="fas fa-star"></i></span>
+                                        }
                                         {this.props.task.name}
                                     </div>
                                     <div className="col-6 col-md-3 mb-3">
@@ -19,7 +30,7 @@ class Task extends React.Component {
                                     <div className="col-12 col-md-4">
                                         <div className="row no-gutters">
                                             <div className="col-4">
-                                                <button type="button"
+                                                <button type="button" onClick={this.taskDone}
                                                     className="btn btn-success btn-sm btn-block small">Done</button>
                                             </div>
                                             <div className="col-4">

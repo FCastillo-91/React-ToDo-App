@@ -3,7 +3,6 @@ import React from "react";
 class NewTask extends React.Component {
     state = {
         taskName: "",
-        progressStatus: [],
         dueDate:"2019-12-09",
         urgency: ""
     };
@@ -13,22 +12,46 @@ class NewTask extends React.Component {
             taskName: event.target.value
         });
     }
+
+    updateDate = (event) => {
+        this.setState ({
+            dueDate: event.target.value
+        }); 
+    }
+
+    updateUrgency = (event) => {
+        this.setState ({
+            urgency: event.target.checked
+        })
+    }
+
+    addTask = () => {
+
+        this.props.addNewTaskFunc(
+            this.state.taskName,
+            this.state.dueDate,
+            this.state.urgency
+        );
+    }
+
+
     render() {
         return (
             <div className="row">
-                <div className="col-5">
-                    <input type="text" onChange={this.updateTaskName} value={this.state.updateTaskName} className="form-control" placeholder="Write Task Here"/>
+                <div className="col-12 col-md-6 mb-2">
+                    <input type="text" onChange={this.updateTaskName} value={this.state.taskName} className="form-control" placeholder="Write Task Here"/>
                 </div>
-                <div className="col-5">
-                    <input type="date" className="form-control"/>
+                <div className="col-8 col-md-3 mb-2">
+                    <input type="date" onChange={this.updateDate} value={this.state.dueDate} className="form-control"/>
                 </div>
-                <div className="col-2">
-                    <button className="btn btn-primary">Add</button>
+                <div className="col-4 col-md-1 mb-2">
+                    <input type="checkbox" onChange={this.updateUrgency} className="form-check-input" id="taskUrgency" name="taskUrgency" />
+                    <label className="form-check-label" hfor="taskUrgency">Is urgent</label>
                 </div>
-                <div className="col-12">
-                    <input type="checkbox" className="form-check-input" id="taskUrgency" name="taskUrgency" />
-                    <label className="form-check-label" hfor="taskUrgency">Is Urgent</label>
+                <div className="col-12 col-md-2 mb-2">
+                    <button onClick={this.addTask} className="btn btn-primary btn-block">Add</button>
                 </div>
+                
             </div>
         );
     }
