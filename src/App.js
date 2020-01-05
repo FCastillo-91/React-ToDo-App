@@ -47,7 +47,17 @@ class App extends React.Component {
       taskList: taskCompleted
     })
   }
+  
+  deleteTask = (id) => {
+    const taskDeleted = this.state.taskList.filter(task => {
+      if (task.id === id) return false;
+      else return true;
+    })
 
+    this.setState({
+      taskList: taskDeleted
+    })
+  }
 
   render() {
     const completedTasks = this.state.taskList.filter(task => {
@@ -70,6 +80,7 @@ class App extends React.Component {
             key={task.id}
             task={task}
             taskCompletedFunc={this.completedTask}
+            taskDeletedFunc={this.deleteTask}
             />
           );
         })}

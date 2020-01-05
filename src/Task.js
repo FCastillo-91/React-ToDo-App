@@ -10,6 +10,13 @@ class Task extends React.Component {
        ); 
     }
 
+    taskDelete = () => {
+
+        this.props.taskDeletedFunc(
+            this.props.task.id
+        )
+    }
+
     render() {
         return (
             <div>
@@ -38,7 +45,7 @@ class Task extends React.Component {
                                                     className="btn btn-secondary btn-sm btn-block small">Edit</button>
                                             </div>
                                             <div className="col-4">
-                                                <button type="button"
+                                                <button type="button" onClick={this.taskDelete}
                                                     className="btn btn-danger btn-sm btn-block small">Delete</button>
                                             </div>
                                         </div>
