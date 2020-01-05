@@ -15,7 +15,12 @@ class App extends React.Component {
       { name: "Order Christmas presents", done: true, dueDate: "2019-11-30", urgency: false, id: uuid() },
       { name: "Send flowers and New Home card to Anna&Joe", done: true, dueDate: "2019-12-01", urgency: true, id: uuid() },
       { name: "Book hair appointment", done: false, dueDate: "2019-10-22", urgency: false, id: uuid() }
-    ]
+    ],
+      taskForm : {
+        name: '',
+        dueDate: '2019-01-01',
+        urgency: true
+      }
   }
 
   addNewTask = (name, date, urgency) => {
@@ -49,14 +54,35 @@ class App extends React.Component {
   }
   
   deleteTask = (id) => {
-    const taskDeleted = this.state.taskList.filter(task => {
+    const myTaskList = this.state.taskList;
+    const filteredTasks = myTaskList.filter(task => {
       if (task.id === id) return false;
       else return true;
     })
 
     this.setState({
-      taskList: taskDeleted
+      taskList: filteredTasks
     })
+  }
+
+  editTask = (id) => {
+    const myTaskList = this.state.taskList;
+    // const selectedTask = myTaskList.find(task => task.id === id);
+    let updateTask;
+    myTaskList.forEach(task => {
+      if (task.id === id){
+        updateTask = {
+          name: task.name,
+          dueDate: task.dueDate,
+          urgency: task.urgency,
+        };
+      } 
+    });
+
+    this.setState({
+      taskForm: updateTask
+    });
+
   }
 
   render() {
@@ -68,11 +94,16 @@ class App extends React.Component {
       return (task.done !== true) 
     });
 
+    const taskForm = this.state.taskForm;
+
     return (
       <div className="App">
         <div className="container">
         <Header />
-        <AddNewTaskForm addNewTaskFunc={this.addNewTask}/>
+        <AddNewTaskForm 
+          addNewTaskFunc={this.addNewTask}
+          taskForm={this.state.taskForm}
+          />
         <ToDoListHeader count={pendingTasks.length} />
         {pendingTasks.map((task) => {
           return (
@@ -81,6 +112,7 @@ class App extends React.Component {
             task={task}
             taskCompletedFunc={this.completedTask}
             taskDeletedFunc={this.deleteTask}
+            taskEditFunc={this.editTask}
             />
           );
         })}

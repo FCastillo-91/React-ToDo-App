@@ -17,6 +17,13 @@ class Task extends React.Component {
         )
     }
 
+    taskEdit = () => {
+
+        this.props.taskEditFunc(
+            this.props.task.id
+        )
+    }
+
     render() {
         return (
             <div>
@@ -41,7 +48,7 @@ class Task extends React.Component {
                                                     className="btn btn-success btn-sm btn-block small">Done</button>
                                             </div>
                                             <div className="col-4">
-                                                <button type="button"
+                                                <button type="button" onClick={this.taskEdit}
                                                     className="btn btn-secondary btn-sm btn-block small">Edit</button>
                                             </div>
                                             <div className="col-4">

@@ -2,9 +2,9 @@ import React from "react";
 
 class NewTask extends React.Component {
     state = {
-        taskName: "",
-        dueDate:"2019-12-09",
-        urgency: ""
+        taskName: this.props.taskForm.name,
+        dueDate: this.props.taskForm.dueDate,
+        urgency: this.props.taskForm.urgency,
     };
 
     updateTaskName = (event) => {
