@@ -9,15 +9,20 @@ import DoneList from "./DoneList";
 import './App.css';
 
 class App extends React.Component {
-  state = {
-    taskList: [],
-    taskForm: {
-      name: '',
-      dueDate: '2019-01-01',
-      urgency: false,
-      id: null
+  constructor(){
+    super()
+    this.state = {
+      taskList: [],
+      taskForm: {
+        name: '',
+        dueDate: this.getTodaydate(),
+        urgency: false,
+        id: null
+      }
     }
+    this.getTodaydate = this.getTodaydate.bind(this)
   }
+
 
   addNewTask = (name, date, urgency, id) => {
     const myTaskList = this.state.taskList;
@@ -62,7 +67,7 @@ class App extends React.Component {
   resetForm = () => {
     const taskForm = {
       name: '',
-      dueDate: '2019-01-01',
+      dueDate: this.getTodaydate(),
       urgency: false,
       id: null
     }
@@ -115,6 +120,14 @@ class App extends React.Component {
       taskForm: updateTask,
       taskList: myTaskList,
     });
+  }
+
+  getTodaydate = () => {
+    let today = new Date();
+    let todayNum = (today.getDate() < 10)? '0'+today.getDate() :  today.getDate();
+    let date = today.getFullYear()+'-'+today.getMonth()+1 +'-'+todayNum;
+    console.log({date:date})
+    return date;
   }
 
   render() {
