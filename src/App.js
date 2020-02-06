@@ -1,5 +1,4 @@
 import React from 'react';
-import uuid from "uuid/v4";
 import axios from "axios";
 import Header from "./Header";
 import AddTask from "./AddTask";
@@ -57,7 +56,6 @@ class App extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-
   }
 
   resetForm = () => {
@@ -85,15 +83,20 @@ class App extends React.Component {
   }
 
   deleteTask = (id) => {
-    const myTaskList = this.state.taskList;
-    const filteredTasks = myTaskList.filter(task => {
-      if (task.id === id) return false;
-      else return true;
+    axios.delete(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${id}`)
+    .catch((err) => {
+      console.log(err);
     })
-
-    this.setState({
+    .then((response) => {
+      const myTaskList = this.state.taskList;
+      const filteredTasks = myTaskList.filter(task => {
+        return task.taskId !== id
+      })
+      
+      this.setState({
       taskList: filteredTasks
-    })
+      })
+    });
   }
 
   editTask = (id) => {
@@ -147,7 +150,7 @@ class App extends React.Component {
           {pendingTasks.map((task) => {
             return (
               <Task
-                key={task.id}
+                key={task.taskId}
                 task={task}
                 taskCompletedFunc={this.completedTask}
                 taskDeletedFunc={this.deleteTask}

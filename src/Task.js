@@ -6,14 +6,14 @@ class Task extends React.Component {
     taskDone = () => { 
 
        this.props.taskCompletedFunc(
-           this.props.task.id
+           this.props.task.taskId
        ); 
     }
 
     taskDelete = () => {
 
         this.props.taskDeletedFunc(
-            this.props.task.id
+            this.props.task.taskId
         )
     }
 
