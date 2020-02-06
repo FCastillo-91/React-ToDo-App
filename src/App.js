@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from "uuid/v4";
 import axios from "axios";
 import Header from "./Header";
-import AddNewTaskForm from "./AddNewTaskForm";
+import AddTask from "./AddTask";
 import ToDoListHeader from "./ToDoListHeader";
 import Task from "./Task";
 import DoneList from "./DoneList";
@@ -15,10 +15,10 @@ class App extends React.Component {
     this.state = {
       taskList: [],
       taskForm: {
-        name: '',
-        dueDate: this.getTodaydate(),
+        task_Text: '',
+        due_Date: this.getTodaydate(),
+        completed: false,
         urgency: false,
-        id: null
       }
     }
     this.getTodaydate = this.getTodaydate.bind(this)
@@ -35,44 +35,29 @@ class App extends React.Component {
         console.log(err);
       })
   }
-  addNewTask = (name, date, urgency, id) => {
+  addNewTask = (name, date, urgency) => {
     const myTaskList = this.state.taskList;
-    //create my task object
     const newTask = {
-      name: name,
-      dueDate: date,
+      task_Text: name,
+      due_Date: date,
       completed: false,
-      urgency: urgency,
-      id: (id === null )? uuid() : id,
-      isEditing: false
+      urgency: urgency
     }
-    //If new task
-    if(id === null){
-      const copyOfTasks = myTaskList;
-      copyOfTasks.slice();
-      //insert my new task
-      copyOfTasks.push(newTask);
-      this.setState({
-        taskList: copyOfTasks
+
+    axios.post("https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks", newTask)
+      .then((response) => {
+        const copyOfTasks = myTaskList;
+        copyOfTasks.slice();
+        copyOfTasks.push(response.data.newTask);
+
+        this.setState({
+          taskList: copyOfTasks
+        })
       })
-      this.resetForm();
-    }else{
-      //edit
-        console.log(myTaskList);
-      myTaskList.forEach(function(task){
-        //update my task
-        if(task.id === id){
-          task.name = newTask.name;
-          task.isEditing = false;
-          task.date = newTask.date;
-          task.urgency = newTask.urgency;
-        }
-      })
-      this.setState({
-        taskList: myTaskList
-      })
-      this.resetForm();
-    }
+      .catch((err) => {
+        console.log(err);
+      });
+
   }
 
   resetForm = () => {
@@ -138,7 +123,6 @@ class App extends React.Component {
     let today = new Date();
     let todayNum = (today.getDate() < 10)? '0'+today.getDate() :  today.getDate();
     let date = today.getFullYear()+'-'+today.getMonth()+1 +'-'+todayNum;
-    console.log({date:date})
     return date;
   }
 
@@ -148,14 +132,14 @@ class App extends React.Component {
     });
 
     const pendingTasks = this.state.taskList.filter(task => {
-      return task.completed !== false
+      return task.completed === false
     });
 
     return (
       <div className="App">
         <div className="container">
           <Header />
-          <AddNewTaskForm
+          <AddTask
             addNewTaskFunc={this.addNewTask}
             taskForm={this.state.taskForm}
           />
