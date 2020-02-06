@@ -13,7 +13,7 @@ class DoneList extends React.Component {
                                 return (
                                     <li key={task.id} 
                                     className="list-group-item">
-                                    {task.name}
+                                    {task.task_Text}
                                     </li>
                                 );
                             })}

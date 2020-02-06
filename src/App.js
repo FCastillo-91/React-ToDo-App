@@ -1,5 +1,6 @@
 import React from 'react';
 import uuid from "uuid/v4";
+import axios from "axios";
 import Header from "./Header";
 import AddNewTaskForm from "./AddNewTaskForm";
 import ToDoListHeader from "./ToDoListHeader";
@@ -22,15 +23,25 @@ class App extends React.Component {
     }
     this.getTodaydate = this.getTodaydate.bind(this)
   }
-
-
+  componentDidMount() {
+    axios.get("https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks")
+      .then((response) => {
+        const tasks = response.data.todos;
+        this.setState({
+          taskList: tasks
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
   addNewTask = (name, date, urgency, id) => {
     const myTaskList = this.state.taskList;
     //create my task object
     const newTask = {
       name: name,
       dueDate: date,
-      done: false,
+      completed: false,
       urgency: urgency,
       id: (id === null )? uuid() : id,
       isEditing: false
@@ -80,7 +91,7 @@ class App extends React.Component {
     const taskCompleted = this.state.taskList;
 
     taskCompleted.forEach(task => {
-      if (task.id === id) return task.done = true;
+      if (task.id === id) return task.completed = true;
     })
 
     this.setState({
@@ -109,6 +120,7 @@ class App extends React.Component {
         task.isEditing = true;
         updateTask = {
           name: task.name,
+          completed: false,
           dueDate: task.dueDate,
           urgency: task.urgency,
           id: task.id
@@ -132,11 +144,11 @@ class App extends React.Component {
 
   render() {
     const completedTasks = this.state.taskList.filter(task => {
-      return (task.done)
+      return task.completed === true
     });
 
     const pendingTasks = this.state.taskList.filter(task => {
-      return (task.done !== true && task.isEditing === false)
+      return task.completed !== false
     });
 
     return (
@@ -146,7 +158,6 @@ class App extends React.Component {
           <AddNewTaskForm
             addNewTaskFunc={this.addNewTask}
             taskForm={this.state.taskForm}
-        
           />
           <ToDoListHeader count={pendingTasks.length} />
           {pendingTasks.map((task) => {

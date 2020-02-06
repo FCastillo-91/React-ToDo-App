@@ -36,13 +36,13 @@ class Task extends React.Component {
                                         {this.props.task.urgency && 
                                         <span className="importantIcon"><i className="fas fa-star"></i></span>
                                         }
-                                        {this.props.task.name}
+                                        {this.props.task.task_Text}
                                     </div>
                                     <div className="col-6 col-md-3 mb-3">
-                                        {this.props.task.dueDate}
+                                        {this.props.task.due_Date}
                                     </div>
                                     <div className="col-12 col-md-4">
-                                        <div className="row no-gutters">
+                                        <div className="row ">
                                             <div className="col-4">
                                                 <button type="button" onClick={this.taskDone}
                                                     className="btn btn-success btn-sm btn-block small">Done</button>
