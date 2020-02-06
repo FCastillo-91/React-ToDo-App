@@ -11,7 +11,7 @@ class DoneList extends React.Component {
                         <ul className="list-group text-dark">
                             {mytask.map((task) => {
                                 return (
-                                    <li key={task.id} 
+                                    <li key={task.taskId} 
                                     className="list-group-item">
                                     {task.task_Text}
                                     </li>

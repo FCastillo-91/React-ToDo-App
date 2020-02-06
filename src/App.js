@@ -70,15 +70,24 @@ class App extends React.Component {
     })
   }
 
-  completedTask = (id) => {
-    const taskCompleted = this.state.taskList;
+  completedTask = (task) => {
 
-    taskCompleted.forEach(task => {
-      if (task.id === id) return task.completed = true;
+    const parameters = {completed:!task.completed}; 
+
+    axios.put(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${task.taskId}`, parameters)
+    .catch((err) => {
+      console.log(err)
     })
-
-    this.setState({
-      taskList: taskCompleted
+    .then((response) => {
+      
+      const taskCompleted = this.state.taskList;
+      taskCompleted.forEach(item => {
+        if (item.taskId === task.taskId) return item.completed = parameters.completed;
+      });
+      console.log({taskCompleted:taskCompleted})
+      this.setState({
+        taskList: taskCompleted
+      })
     })
   }
 
@@ -133,6 +142,8 @@ class App extends React.Component {
     const completedTasks = this.state.taskList.filter(task => {
       return task.completed === true
     });
+
+    console.log({completedTasks: completedTasks})
 
     const pendingTasks = this.state.taskList.filter(task => {
       return task.completed === false
