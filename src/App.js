@@ -6,6 +6,9 @@ import ToDoListHeader from "./ToDoListHeader";
 import Task from "./Task";
 import DoneList from "./DoneList";
 
+import alertify from 'alertifyjs';
+
+
 import './App.css';
 
 class App extends React.Component {
@@ -74,6 +77,7 @@ class App extends React.Component {
       taskForm: taskForm,
       taskId: null
     })
+    alertify.success('Task added.');
   }
 
   completedTask = (task) => {
@@ -93,10 +97,18 @@ class App extends React.Component {
         this.setState({
           taskList: taskCompleted
         })
+        alertify.success('Task completed.');
       })
   }
 
   deleteTask = (id) => {
+    const myapp = this;
+    alertify.confirm("Are you sure you want to delete this task?",function(){
+      myapp.deleteTaskConfirm(id)
+    });
+  }
+
+  deleteTaskConfirm = (id) => {
     axios.delete(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${id}`)
       .catch((err) => {
         console.log(err);
@@ -110,8 +122,11 @@ class App extends React.Component {
         this.setState({
           taskList: filteredTasks
         })
+        alertify.error('Task deleted');
       });
   }
+
+  
 
   editTask = (task) => {
 
@@ -127,6 +142,7 @@ class App extends React.Component {
     });
 
     this.scrollToId('myTaskForm');
+
   }
 
   updateEditedTask = (task_Text, due_Date, urgency, taskId) => {
@@ -156,6 +172,7 @@ class App extends React.Component {
           taskList: taskUpdate
         });
         this.resetForm()
+        alertify.success('Task updated.');
       });
   }
 

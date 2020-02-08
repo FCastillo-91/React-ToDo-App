@@ -1,4 +1,5 @@
 import React from "react";
+import alertify from "alertifyjs";
 
 class AddTask extends React.Component {
     constructor(props) {
@@ -41,10 +42,12 @@ class AddTask extends React.Component {
     addTask = () => {
 
         if (this.state.task_Text === "") {
-            return alert("Please add Task")
+            return alertify
+            .alert("Please input a task.")
         }
         if (this.state.due_Date === "") {
-            return alert("Please select a task due date")
+            return alertify
+            .alert("Please input a task due date.")
         }
 
         this.props.addNewTaskFunc(

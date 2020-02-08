@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "alertifyjs": "^1.13.1",
     "axios": "^0.19.2",
     "gh-pages": "^2.1.1",
     "moment": "^2.24.0",
