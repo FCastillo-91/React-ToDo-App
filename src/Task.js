@@ -1,4 +1,5 @@
-import React from "react"
+import React from "react";
+import moment from "moment";
 import './Task.css';
 
 class Task extends React.Component {
@@ -18,11 +19,12 @@ class Task extends React.Component {
     }
 
     taskEdit = () => {
-
+        
         this.props.taskEditFunc(
-            this.props.task.id
-        )
+            this.props.task
+        ) 
     }
+   
 
     render() {
         return (
@@ -38,8 +40,8 @@ class Task extends React.Component {
                                         }
                                         {this.props.task.task_Text}
                                     </div>
-                                    <div className="col-6 col-md-3 mb-3">
-                                        {this.props.task.due_Date}
+                                    <div className="col-6 col-md-3 mb-3 text-right">
+                                        {moment(this.props.task.due_Date).format("DD/MM/YYYY")}
                                     </div>
                                     <div className="col-12 col-md-4">
                                         <div className="row ">
@@ -48,7 +50,7 @@ class Task extends React.Component {
                                                     className="btn btn-success btn-sm btn-block small">Done</button>
                                             </div>
                                             <div className="col-4">
-                                                <button type="button" onClick={this.taskEdit}
+                                                <button type="button" onClick={this.taskEdit} 
                                                     className="btn btn-secondary btn-sm btn-block small">Edit</button>
                                             </div>
                                             <div className="col-4">

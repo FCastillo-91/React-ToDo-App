@@ -6,9 +6,18 @@ class AddTask extends React.Component {
         this.state = {
             task_Text: props.taskForm.task_Text,
             due_Date: props.taskForm.due_Date,
-            completed: props.taskForm.completed,
-            urgency: props.taskForm.urgency
+            urgency: props.taskForm.urgency,
+            taskId: props.taskId
         };
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        this.setState({
+            task_Text: nextProps.taskForm.task_Text,
+            due_Date: nextProps.taskForm.due_Date,
+            urgency: nextProps.taskForm.urgency,
+            taskId: nextProps.taskId
+        });
     }
 
     updateTaskText = (event) => {
@@ -30,19 +39,28 @@ class AddTask extends React.Component {
     }
 
     addTask = () => {
-    
+
         if (this.state.task_Text === "") {
-            return alert ("Please add Task")
+            return alert("Please add Task")
         }
         if (this.state.due_Date === "") {
-            return alert ("Please select a task due date")
+            return alert("Please select a task due date")
         }
-        
+
         this.props.addNewTaskFunc(
             this.state.task_Text,
             this.state.due_Date,
             this.state.urgency
         );
+    }
+
+    updateEditedTask = () => {
+        this.props.updateEditedTaskFunc(
+            this.state.task_Text,
+            this.state.due_Date,
+            this.state.urgency,
+            this.state.taskId
+        )
     }
 
     render() {
@@ -55,24 +73,30 @@ class AddTask extends React.Component {
                     <input type="date" onChange={this.updateDate} value={this.state.due_Date} className="form-control" />
                 </div>
                 <div className="col-4 col-md-1 mb-2">
-                    <input 
-                        type="checkbox" 
-                        onChange={this.updateUrgency} 
-                        className="form-check-input" 
-                        id="taskUrgency" 
-                        name="taskUrgency" 
+                    <input
+                        type="checkbox"
+                        onChange={this.updateUrgency}
+                        className="form-check-input"
+                        id="taskUrgency"
+                        name="taskUrgency"
                         checked={this.state.urgency}
-                        />
+                    />
                     <label className="form-check-label" hfor="taskUrgency">Is urgent</label>
                 </div>
                 <div className="col-12 col-md-2 mb-2">
-                    <button onClick={ () => this.addTask() } 
-                    className={
-                        this.state.id ? "btn btn-success btn-block" : "btn btn-primary btn-block"
+                    {this.state.taskId &&
+                        <button onClick={() => this.updateEditedTask()}
+                            className="btn btn-success btn-block">
+                            Update
+                            </button>
                     }
-                    >
-                        {this.state.id ? 'Update' : "Add"} 
-                        </button>
+
+                    {!this.state.taskId &&
+                        <button onClick={() => this.addTask()}
+                            className="btn btn-primary btn-block">
+                            Add
+                            </button>
+                    }
                 </div>
 
             </div>

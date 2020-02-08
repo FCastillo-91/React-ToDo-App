@@ -9,7 +9,7 @@ import DoneList from "./DoneList";
 import './App.css';
 
 class App extends React.Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
       taskList: [],
@@ -17,8 +17,9 @@ class App extends React.Component {
         task_Text: '',
         due_Date: this.getTodaydate(),
         completed: false,
-        urgency: false,
-      }
+        urgency: false
+      },
+      taskId: null
     }
     this.getTodaydate = this.getTodaydate.bind(this)
   }
@@ -51,7 +52,10 @@ class App extends React.Component {
 
         this.setState({
           taskList: copyOfTasks
-        })
+        });
+
+        this.resetForm()
+
       })
       .catch((err) => {
         console.log(err);
@@ -60,90 +64,117 @@ class App extends React.Component {
 
   resetForm = () => {
     const taskForm = {
-      name: '',
-      dueDate: this.getTodaydate(),
-      urgency: false,
-      id: null
+      task_Text: '',
+      due_Date: this.getTodaydate(),
+      completed: false,
+      urgency: false
     }
+
     this.setState({
-      taskForm: taskForm
+      taskForm: taskForm,
+      taskId: null
     })
   }
 
   completedTask = (task) => {
 
-    const parameters = {completed:!task.completed}; 
+    const parameters = { completed: !task.completed };
 
     axios.put(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${task.taskId}`, parameters)
-    .catch((err) => {
-      console.log(err)
-    })
-    .then((response) => {
-      
-      const taskCompleted = this.state.taskList;
-      taskCompleted.forEach(item => {
-        if (item.taskId === task.taskId) return item.completed = parameters.completed;
-      });
-      console.log({taskCompleted:taskCompleted})
-      this.setState({
-        taskList: taskCompleted
+      .catch((err) => {
+        console.log(err)
       })
-    })
+      .then((response) => {
+
+        const taskCompleted = this.state.taskList;
+        taskCompleted.forEach(item => {
+          if (item.taskId === task.taskId) return item.completed = parameters.completed;
+        });
+        this.setState({
+          taskList: taskCompleted
+        })
+      })
   }
 
   deleteTask = (id) => {
     axios.delete(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${id}`)
-    .catch((err) => {
-      console.log(err);
-    })
-    .then((response) => {
-      const myTaskList = this.state.taskList;
-      const filteredTasks = myTaskList.filter(task => {
-        return task.taskId !== id
+      .catch((err) => {
+        console.log(err);
       })
-      
-      this.setState({
-      taskList: filteredTasks
-      })
-    });
+      .then((response) => {
+        const myTaskList = this.state.taskList;
+        const filteredTasks = myTaskList.filter(task => {
+          return task.taskId !== id
+        })
+
+        this.setState({
+          taskList: filteredTasks
+        })
+      });
   }
 
-  editTask = (id) => {
-    const myTaskList = this.state.taskList;
-    
-    let updateTask;
-    myTaskList.forEach(task => {
-      if (task.id === id) {
-        task.isEditing = true;
-        updateTask = {
-          name: task.name,
-          completed: false,
-          dueDate: task.dueDate,
-          urgency: task.urgency,
-          id: task.id
-        };
-      }
+  editTask = (task) => {
+
+    let editTask = {
+      task_Text: task.task_Text,
+      completed: false,
+      due_Date: task.due_Date.split("T")[0],
+      urgency: task.urgency,
+    }
+    this.setState({
+      taskForm: editTask,
+      taskId: task.taskId
     });
 
-    this.setState({
-      taskForm: updateTask,
-      taskList: myTaskList,
-    });
+    this.scrollToId('myTaskForm');
+  }
+
+  updateEditedTask = (task_Text, due_Date, urgency, taskId) => {
+    const editData = {
+      task_Text: task_Text,
+      due_Date: due_Date,
+      urgency: urgency,
+      taskId: taskId
+    };
+
+    axios.put(`https://ek43k7gjoj.execute-api.eu-west-1.amazonaws.com/dev/tasks/${taskId}`, editData)
+      .catch((err) => {
+        console.log(err)
+      })
+      .then((response) => {
+        //update my tasklist
+        const taskUpdate = this.state.taskList
+        taskUpdate.forEach(task => {
+          if (task.taskId === taskId) {
+            task.task_Text = task_Text;
+            task.due_Date = due_Date;
+            task.urgency = urgency;
+            return
+          }
+        })
+        this.setState({
+          taskList: taskUpdate
+        });
+        this.resetForm()
+      });
   }
 
   getTodaydate = () => {
     let today = new Date();
-    let todayNum = (today.getDate() < 10)? '0'+today.getDate() :  today.getDate();
-    let date = today.getFullYear()+'-'+today.getMonth()+1 +'-'+todayNum;
+    let todayNum = (today.getDate() < 10) ? '0' + today.getDate() : today.getDate();
+    let date = today.getFullYear() + '-' + today.getMonth() + 1 + '-' + todayNum;
     return date;
+  }
+
+  scrollToId = (element) => {
+    var elmnt = document.getElementById(element);
+    elmnt.scrollIntoView(true);
   }
 
   render() {
     const completedTasks = this.state.taskList.filter(task => {
       return task.completed === true
     });
-
-    console.log({completedTasks: completedTasks})
 
     const pendingTasks = this.state.taskList.filter(task => {
       return task.completed === false
@@ -153,9 +184,12 @@ class App extends React.Component {
       <div className="App">
         <div className="container">
           <Header />
+          <div id="myTaskForm" className="mb-5"></div>
           <AddTask
             addNewTaskFunc={this.addNewTask}
             taskForm={this.state.taskForm}
+            taskId={this.state.taskId}
+            updateEditedTaskFunc={this.updateEditedTask}
           />
           <ToDoListHeader count={pendingTasks.length} />
           {pendingTasks.map((task) => {
